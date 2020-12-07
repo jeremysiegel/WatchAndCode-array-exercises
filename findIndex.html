@@ -1,0 +1,204 @@
+<script src="../simpletest.js"></script>
+
+<script>
+
+//Prototype implementation
+/* function find(array, callback) {
+for(var i = 0; i<array.length; i++){
+    
+    if (callback(array[i])) {
+        return i;
+    }
+
+    }
+} */
+
+//Function signature
+    //findIndex(array, callback(element[, index[, array]])[, thisArg])
+
+//Callback parameters:
+    //element
+    //index
+    //array
+
+//Return value:
+    // Returns the index of the first element in the array that satisfies the callback
+
+//Requirements:
+//It should execute callback once for each index
+//Callback should accept the current element in the array
+//Callback should be able to access the index of current element in the array
+//Callback should be able to access the original array
+//It should accept optional this argument
+//It should invoke callback on empty items
+//It should return the value of the first element that satisfies callback
+///It should stop execution once truthy is returned
+//If it does not find an element that satisfies callback, it should return undefined
+//It should set the number of elements processed by find before first invocation of callback
+
+//It should pass existing but changed or deleted items to the callback as found
+
+function findIndex(originalArray, callback, optionalThis){
+  var findCallback = callback;
+  var returnFromCallback;
+  
+  if(optionalThis){
+    findCallback = callback.bind(optionalThis);
+  }
+
+   var runLength = originalArray.length;
+    var findIndex = 0;
+
+    for(var i = 0; i < runLength; i++){
+      returnFromCallback = findCallback(originalArray[i], i, originalArray);
+      if(returnFromCallback === undefined || returnFromCallback === false){
+     
+      } else {
+        findIndex = i;
+        break;
+      }
+    }
+    if(returnFromCallback === undefined || returnFromCallback === false){
+      return -1;
+    } else {
+      return findIndex;
+  }
+   
+}
+
+
+
+
+
+  tests({
+
+  'If there are no values in the array that satisfy the callback conditions, it should run the callback function array.length times': function() {
+   var testArray = [1,2,3];
+   var numberOfTimesCallbackHasRun = 0;
+   findIndex(testArray, function() {
+     numberOfTimesCallbackHasRun++;
+     });
+     eq(numberOfTimesCallbackHasRun,3);
+
+    
+ }, 
+
+ 'Callback should accept the current element in the array': function() {
+   var testArray = [2];
+   findIndex(testArray, function(currentElement) {
+    eq(currentElement,2);
+
+    });
+
+    
+ }, 
+
+ 'Callback should be able to access the index of current element in the array': function() {
+   var testArray = [2];
+   findIndex(testArray, function(currentElement, currentIndex) {
+    eq(currentIndex,0);
+
+    });
+
+    
+ }, 
+
+ 'Callback should be able to access the original array': function() {
+   var testArray = [2];
+   findIndex(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    eq(arrayToBeTested,testArray);
+
+    });
+
+    
+ }, 
+
+ 'It should accept optional this argument': function() {
+   var testArray = [2];
+   findIndex(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    eq(this.name,'jeremy');
+
+    }, {name: 'jeremy'});
+
+    
+ }, 
+
+ 'It should invoke callback on empty items': function() {
+  var testArray = [,,3];
+   var numberOfTimesCallbackHasRun = 0;
+   findIndex(testArray, function() {
+     numberOfTimesCallbackHasRun++;
+     });
+     eq(numberOfTimesCallbackHasRun,3);
+
+    
+ }, 
+
+ 'It should return the index of the first element that satisfies callback': function() {
+  var testArray = [1,2,4];
+  var returnItem = findIndex(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    if(currentElement > 1){
+    return currentElement;
+    }
+    }, {name: 'jeremy'});
+
+    eq(returnItem,1);  
+ }, 
+   
+ 'It should stop execution once truthy is returned': function() {
+  var testArray = [1,2,4];
+  var numberOfTimesCallbackHasRun = 0;
+  var returnItem = findIndex(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    numberOfTimesCallbackHasRun++;
+    if(currentElement > 1){
+    return currentElement;
+    }
+    }, {name: 'jeremy'});
+
+    eq(numberOfTimesCallbackHasRun, 2);  
+ }, 
+   
+ 'If it does not find an element that satisfies callback, it should return -1': function() {
+  var testArray = [1,2,4];
+  var returnItem = findIndex(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    if(currentElement > 5){
+    return currentElement;
+    }
+    }, {name: 'jeremy'});
+
+    eq(returnItem, -1);  
+ }, 
+
+'It should set the number of elements processed by find before first invocation of callback': function() {
+var testArray = [1,2,4,6];
+var numberOfTimesCallbackHasRun = 0;
+findIndex(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    numberOfTimesCallbackHasRun++;
+    if(currentIndex===0){
+      arrayToBeTested.push(4);
+    };
+    }, {name: 'jeremy'});
+
+    eq(numberOfTimesCallbackHasRun, 4);  
+ },  
+
+ 'It should pass existing but changed or deleted items to the callback as found': function() {
+var testArray = [1,2,4,6];
+var element2 = testArray[1];
+var element3 = testArray[2];
+findIndex(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+  if(currentIndex===0){
+      arrayToBeTested[1] = 5;
+      delete arrayToBeTested[2];
+
+    };
+  element2 = arrayToBeTested[1];
+  element3 = arrayToBeTested[2];
+    }, {name: 'jeremy'});
+
+    eq(element2, 5);  
+    eq(element3, undefined); 
+ }  
+
+}); 
+</script>

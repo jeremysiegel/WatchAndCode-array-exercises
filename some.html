@@ -1,0 +1,218 @@
+<script src="../simpletest.js"></script>
+
+<script>
+
+//Prototype implementation
+/* function some(array, callback) {
+for(var i = 0; i<array.length; i++){
+    
+    if (callback(element)) {
+        return true;
+    } else {
+        
+    }
+return false;
+    }
+} */
+
+//Function signature
+    //some(array, callback(element[, index[, array]])[, thisArg])
+
+//Callback parameters:
+    //element
+    //index
+    //array
+
+//Return value:
+    // true if the callback function returns a truthy value for one array element. Otherwise, false.
+
+    //Requirements:
+
+//It should execute callback array.length times
+//Callback should accept the current element in the array
+//Callback should be able to access the index of current element in the array
+//Callback should be able to access the original array
+//It should accept optional this argument
+
+//It should return false for empty arrays
+//It should not invoke callback on empty items
+//It should return true after first element that does satisfy callback
+//It should not run on elements appended to the array
+//It should not run on deleted elements
+
+function some(originalArray, callback, optionalThis){
+
+    var everyCallback = callback;
+
+    if(optionalThis) {
+        everyCallback = callback.bind(optionalThis);
+    }
+    
+    var returnValue;
+    var runLength = originalArray.length;
+
+    for(var i=0; i<runLength; i++){
+        if(originalArray[i]===undefined){
+
+        } else {
+        returnValue = everyCallback(originalArray[i], i, originalArray);
+
+        if(returnValue){
+            return true;
+        }
+    }
+    
+    
+    
+}
+return false;
+} 
+
+
+  tests({
+
+  'If there are no empty values in the array and nothing meets the callback function condition, it should run the callback function array.length times': function() {
+   var testArray = [1,2,3];
+   var numberOfTimesCallbackHasRun = 0;
+   some(testArray, function() {
+     numberOfTimesCallbackHasRun++;
+     return false;
+     });
+     eq(numberOfTimesCallbackHasRun,3);
+
+    
+ }, 
+
+ 'Callback should accept the current element in the array': function() {
+   var testArray = [2];
+   some(testArray, function(currentElement) {
+    eq(currentElement,2);
+
+    });
+
+    
+ }, 
+
+ 'Callback should be able to access the index of current element in the array': function() {
+   var testArray = [2];
+   some(testArray, function(currentElement, currentIndex) {
+    eq(currentIndex,0);
+
+    });
+
+    
+ }, 
+
+ 'Callback should be able to access the original array': function() {
+   var testArray = [2];
+   some(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    eq(arrayToBeTested,testArray);
+
+    });
+
+    
+ }, 
+
+ 'It should accept optional this argument': function() {
+   var testArray = [2];
+   some(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    eq(this.name,'jeremy');
+
+    }, {name: 'jeremy'});
+
+    
+ }, 
+
+ 'It should return false for empty arrays': function() {
+  var testArray = [];
+   var returnValue = some(testArray, function() {
+     });
+     eq(returnValue,false);
+
+    
+ }, 
+
+ 'It should not invoke callback on empty items': function() {
+    var testArray = [,,3];
+   var numberOfTimesCallbackHasRun = 0;
+   some(testArray, function() {
+     numberOfTimesCallbackHasRun++;
+     });
+     eq(numberOfTimesCallbackHasRun,1); 
+ }, 
+   
+ 'It should return true after first element that does satisfy callback': function() {
+  var testArray = [1,2,4];
+  var numberOfTimesCallbackHasRun = 0;
+  some(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    numberOfTimesCallbackHasRun++;
+    return currentElement > 1;
+    }
+    , {name: 'jeremy'});
+
+    eq(numberOfTimesCallbackHasRun, 2);  
+ }, 
+ 
+ 
+ 'It should return false if no elements satisfy callback': function() {
+  var testArray = [1,2,4];
+  var returnBool = some(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    
+    return currentElement > 5;
+    }
+    , {name: 'jeremy'});
+
+    eq(returnBool, false);  
+ }, 
+
+ 'It should not run on elements appended to the array': function() {
+    var testArray = [1,2,4];
+var numberOfTimesCallbackHasRun = 0;
+some(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    numberOfTimesCallbackHasRun++;
+    if(currentIndex===0){
+      arrayToBeTested.push(4);
+    };
+
+    return currentElement > 10;
+
+    }, {name: 'jeremy'});
+
+    eq(numberOfTimesCallbackHasRun, 3);  
+ }, 
+
+'It should not run on deleted elements': function() {
+var testArray = [1,2,4,6];
+var numberOfTimesCallbackHasRun = 0;
+some(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    numberOfTimesCallbackHasRun++;
+    if(currentIndex===0){
+      arrayToBeTested.splice(1,1);
+    }
+    return currentElement > 10;
+    ;
+    }, {name: 'jeremy'});
+
+    eq(numberOfTimesCallbackHasRun, 3);  
+ },
+ 
+ 'It should run on changed elements as changed': function() {
+var testArray = [1,2,4,6];
+var numberOfTimesCallbackHasRun = 0;
+some(testArray, function(currentElement, currentIndex, arrayToBeTested) {
+    numberOfTimesCallbackHasRun++;
+    if(currentIndex===0){
+      arrayToBeTested[2]= 11;
+    }
+    return currentElement > 10;
+    ;
+    }, {name: 'jeremy'});
+
+    eq(numberOfTimesCallbackHasRun, 3);  
+ } 
+
+
+
+
+}); 
+</script>

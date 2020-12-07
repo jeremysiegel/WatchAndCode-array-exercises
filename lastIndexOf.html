@@ -1,0 +1,105 @@
+<script src="../simpletest.js"></script>
+<script>
+
+
+//Function signature
+//lastIndexOf(array,searchElement[, fromIndex])
+
+//Return the last index of the element in the array
+
+//Requirements
+
+//Returns last index at which a given element can be found in the array
+//Returns -1 if given element is not present
+//If there is no start index, search should start at array[array.length-1]
+//It should accept an optional start index
+//If there is a start index and it is greater than or equal to array.length, it should search the whole array
+//If there is a start index and it is negative, it should be taken as an offset from the end of the array
+//If there is a start index and it is <0, the array is not searched
+
+function lastIndexOf(array, searchElement, fromIndex){
+    
+    var startIndex = 0;
+
+    if(!fromIndex){
+        if(fromIndex != 0) {
+            startIndex= array.length - 1;
+      }
+    }
+    
+    if(fromIndex) {
+        if(fromIndex>0){
+            startIndex=fromIndex;        
+        } else {
+            startIndex = array.length + fromIndex;
+        }
+    }
+    
+    for (var i=startIndex; i>-1; i--){
+        if(array[i] === searchElement){
+            return i;
+        }
+    }
+    return -1;
+}
+
+tests({
+
+'Returns last index at which a given element can be found in the array':function(){
+var returnedValue = lastIndexOf([3, 3], 3);
+eq(returnedValue, 1);
+
+},
+
+'Returns -1 if given element is not present':function(){
+
+var returnedValue = lastIndexOf([3], 4);
+eq(returnedValue, -1);
+
+
+},
+
+'If there is no start index, search should start at array[array.length-1]':function(){
+
+var returnedValue = lastIndexOf([2,2,2,2], 2); 
+eq(returnedValue, 3);
+
+},
+
+'It should accept an optional start index':function(){
+var returnedValue = lastIndexOf([2,2,2,2], 2, 1); 
+eq(returnedValue, 1);
+
+
+},
+
+'If there is a start index and it is greater than or equal to array.length, it should search the whole array':function(){
+var returnedValue = lastIndexOf([2,2,2,2], 2, 4); 
+eq(returnedValue, 3);
+
+},
+
+'If there is a start index and it is negative, it should be taken as an offset from the end of the array':function(){
+
+var returnedValue = lastIndexOf([2,2,2,2], 2, -3); 
+eq(returnedValue, 1);  
+
+
+},
+
+'If there is a start index and it is <(-array.length), the array is not searched':function(){
+var returnedValue = lastIndexOf([2,2,2,2], 2, -5); 
+eq(returnedValue, -1);  
+
+},
+
+'If there is a start index and it is 0, search should start at array[0]':function(){
+var returnedValue = lastIndexOf([2,2,2,2], 2, 0); 
+eq(returnedValue, 0);  
+
+}
+
+});
+
+
+</script>

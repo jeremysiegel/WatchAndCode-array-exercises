@@ -1,0 +1,113 @@
+<script src="../simpletest.js"></script>
+<script>
+
+//Prototype implementation:
+// for (var i =0; i<array.length; i++){
+//    array[array.length+i] = inputArray[i];
+//}
+
+//Function signature
+//push(array[element1[, ...[, elementN]]])
+
+//Requirements
+//It should add elements to the end of array
+//It should modify the existing array
+//It should return the new length of the array
+//It should work on objects resembling arrays
+//If the length property is non existent or cannot be converted to a number, it should use index 0
+
+
+function push(array){
+    //if(Array.isArray(array)){
+    argumentsArray = Array.from(arguments);
+    pushValues = argumentsArray.slice(1, argumentsArray.length);
+    
+    if(!Array.isArray(array) && (!array.hasOwnProperty('length') || Number(array.length) != Number(array.length))){
+        array.length=0;
+    }
+    arrayStartLength = array.length;
+    
+
+    for (var i =0; i< pushValues.length; i++){
+        array[(arrayStartLength+i)] = pushValues[i];
+        if(!Array.isArray(array)){
+            array.length++;
+        }
+    }
+
+    return array.length;
+}
+
+
+tests({
+
+'It should add elements to the end of array':function(){
+    var testArray = [1,2];
+    push(testArray, 3, 4);
+    eq(testArray[2],3);
+    eq(testArray[3],4);
+
+},
+
+
+'It should modify the existing array':function(){
+    var testArray = [1,2];
+    push(testArray, 3, 4);
+    eq(testArray.length, 4);
+},
+
+
+'It should return the new length of the array':function(){
+    var testArray = [1,2];
+    var returnValue = push(testArray, 3, 4);
+    eq(returnValue, 4);
+    
+    },
+
+
+
+
+'It should work on objects resembling arrays':function(){
+    let obj = {
+    length: 0,
+
+    addElem: function addElem(elem) {
+        // obj.length is automatically incremented 
+        // every time an element is added.
+        push(this, elem);
+    }
+
+    }
+    
+    obj.addElem({});
+    obj.addElem({});
+    eq(obj.length, 2);
+
+
+
+},
+
+'If the length property is non existent or cannot be converted to a number, it should use index 0':function(){
+    let obj = {
+    
+
+    addElem: function addElem(elem) {
+        // obj.length is automatically incremented 
+        // every time an element is added.
+        push(this, elem);
+    }
+
+    }
+    
+    obj.addElem({});
+    obj.addElem({});
+    eq(obj.length, 2);
+
+}
+
+
+
+});
+
+
+</script>

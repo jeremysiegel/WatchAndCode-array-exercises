@@ -1,0 +1,82 @@
+<script src="../simpletest.js"></script>
+<script>
+
+//Prototype implementation:
+
+//for(var i=0; i<array.length-1; i++){
+//    array[i] = array[i];
+//}
+
+//Function signature:
+//pop(array)
+
+
+//Requirements:
+
+//It should remove the last element from an array
+//It should return the last element of the array
+//It should reduce the length of array by 1
+//It should return undefined if the array is empty
+//It should apply to objects resembling arrays
+
+function pop(array){
+    if(array.length === 0){
+        return undefined;
+    }
+    
+    arrayNewLength = array.length - 1;
+    var returnValue = array[arrayNewLength];
+    array.length = arrayNewLength;
+
+    if(!Array.isArray(array)) {
+        delete array[arrayNewLength];
+    }
+
+    return returnValue;
+
+}
+
+
+tests({
+
+'It should remove the last element from an array':function(){
+    var testArray = [1,2];
+    pop(testArray);
+    eq(testArray[testArray.length-1],1);
+},
+
+
+'It should return the last element of the original array':function(){
+    var testArray = [1,2];
+    var returnValue = pop(testArray);
+    eq(returnValue,2);
+
+},
+
+'It should reduce the length of array by 1':function(){
+    var testArray = [1,2];
+    pop(testArray);
+    eq(testArray.length,1);
+},
+
+'It should return undefined if the array is empty':function(){
+    var testArray = [];
+    var returnValue = pop(testArray);
+    eq(returnValue,undefined);
+},
+
+'It should apply to objects resembling arrays with a length property that is last in a series of consecutive zero-based numerical properties':function(){
+var myFish = {0:'angel', 1:'clown', 2:'mandarin', 3:'sturgeon', length: 4};
+
+var returnValue = pop(myFish); //same syntax for using apply( )
+
+eq(myFish.hasOwnProperty(3), false);
+eq(myFish.length, 3);
+eq(returnValue, 'sturgeon');
+
+},  
+
+});
+
+
+</script>

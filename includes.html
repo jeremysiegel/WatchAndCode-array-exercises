@@ -1,0 +1,174 @@
+<script src="../simpletest.js"></script>
+<script>
+
+//Function signature
+//includes(array, valueToFind[, fromIndex])
+
+//Return value
+//Boolean 
+
+//Requirements
+
+//It should return true if valueToFind is in array
+//It should return false if valueToFind is not in array
+
+//It should be case-sensitive
+//It should accept an optional fromIndex
+//If there is an optional fromIndex, the first element search should be at fromIndex
+//If there is an optional fromIndex, and it is negative, search should start at array.length + fromIndex
+//If there is an optional fromIndex, and it is 0, search should start at array[0]
+//If there is an optional fromIndex, false should not be considered to be 0
+//If there is an optional fromIndex, -0 should be considered to be 0
+//If array includes NaN, and valueToFind is NaN, it should return true
+
+function includes(array, valueToFind, fromIndex){
+    
+    var startingIndex = 0;
+   
+    if(fromIndex) {
+        if(fromIndex<0){
+            startingIndex = array.length + fromIndex;
+        } else {
+            startingIndex = fromIndex;
+        }
+    }
+
+//if valueToFind is NaN
+    if(valueToFind != valueToFind){
+        for(var i = startingIndex; i < array.length; i++) {
+            if(array[i] != array[i]){
+                return true;
+            }
+        }    
+    }
+ //all other cases
+    
+    for(var i = startingIndex; i < array.length; i++){
+        if(array[i] === valueToFind) {
+            return true;
+        } 
+    }
+    return false;
+}
+
+tests({
+
+'It should return true if valueToFind is in array': function(){
+    var testArray = [2];
+    var valueToFind = 2;
+    var returnValue = includes(testArray, valueToFind);
+    eq(returnValue, true);
+
+},
+
+'It should return false if valueToFind is not in array': function(){
+    var testArray = [2];
+    var valueToFind = 3;
+    var returnValue = includes(testArray, valueToFind);
+    eq(returnValue, false);
+
+    
+},
+
+'It should be case-sensitive': function(){
+    var testArray = ['a'];
+    var valueToFind = 'A';
+    var returnValue = includes(testArray, valueToFind);
+    eq(returnValue, false);
+
+    
+},
+
+'It should accept an optional fromIndex': function(){
+    var testArray = [2,3,4];
+    var valueToFind = 2;
+    var fromIndex = 1;
+    var returnValue = includes(testArray, valueToFind, fromIndex);
+    eq(returnValue, false);
+
+    
+},
+
+
+
+'If there is an optional fromIndex, and it is negative, search should start at array.length + fromIndex': function(){
+    var testArray = [2,3,4];
+    var valueToFind = 2;
+    var fromIndex = -2;
+    var returnValue = includes(testArray, valueToFind, fromIndex);
+    eq(returnValue, false);
+
+    
+},
+
+'If there is an optional fromIndex, and it is 0, search should start at array[0]': function(){
+    var testArray = [2,3,4];
+    var valueToFind = 2;
+    var fromIndex = 0;
+    var returnValue = includes(testArray, valueToFind, fromIndex);
+    eq(returnValue, true);
+
+    
+},
+
+'False should not be considered to be 0': function(){
+    var testArray = [2,false,4];
+    var valueToFind = 0;
+    var fromIndex = 0;
+    var returnValue = includes(testArray, valueToFind, fromIndex);
+    eq(returnValue, false);
+
+    
+},
+
+'-0 should be considered to be 0': function(){
+    var testArray = [2,-0,4];
+    var valueToFind = 0;
+    var fromIndex = 0;
+    var returnValue = includes(testArray, valueToFind, fromIndex);
+    eq(returnValue, true);
+
+    
+},
+
+'If array includes NaN, and valueToFind is NaN, it should return true': function(){
+    var testArray = [2,NaN,4];
+    var valueToFind = NaN;
+    var fromIndex = 0;
+    var returnValue = includes(testArray, valueToFind, fromIndex);
+    eq(returnValue, true);
+
+    
+},
+
+'If there is an optional fromIndex, and it is >=array.length, it should return false': function(){
+    var testArray = [2,2,2];
+    var valueToFind = 2;
+    var fromIndex = 3;
+    var returnValue = includes(testArray, valueToFind, fromIndex);
+    eq(returnValue, false);
+
+    
+},
+
+'It should work on array-like objects': function(){
+
+var testBool = false;
+var testRan = false;
+
+(function() {
+  testBool = includes(arguments, 'a');  
+  testRan = true;
+  eq(testBool, true); 
+})('a','b','c') 
+
+eq(testRan, true) 
+
+    
+},
+
+
+});
+
+
+</script>

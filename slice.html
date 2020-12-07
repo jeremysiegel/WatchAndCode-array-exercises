@@ -1,0 +1,183 @@
+<script src="../simpletest.js"></script>
+<script>
+
+
+//Function signature
+//slice(array, [start[, end]])
+
+//Return value
+//array
+
+//Requirements
+//It should return a new array
+//returnArray[0] should be the element at array[start]
+//returnArray[returnArray.length - 1] should be the element at array[end - 1];
+//If start is negative, it should be an offset from the end of the array
+//If start is undefined, it should start at index 0
+//If start is > array.length - 1, it should return an empty array
+//If end is negative, it should be an offset from the end of the array
+//If end is omitted, it should extract through the end of the array
+//If end is >array.length, it should extract through the end of the array
+//returnArray.length should be end-start, or array.length - start if it runs until the end of the array
+//Object references should continue to refer to the original object
+//It should work on array-like objects
+
+function slice(array, startValue, endValue){
+    
+    returnArray = [];
+    var returnArrayIndex = 0;
+    var endIndex = array.length;
+    var startIndex = startValue;
+
+    if(startValue === undefined) {
+        startIndex = 0;
+    }
+
+    if(startValue < 0) {
+        startIndex = array.length + startValue;
+    }
+
+    if(arguments.length>2 && endValue != undefined && endValue < array.length){
+        endIndex = endValue;
+    }
+        
+    if(endValue < 0) {
+        endIndex = array.length + endValue;
+    }
+
+    if(startIndex>array.length-1){
+        return returnArray;
+    }
+
+    for(var i = startIndex; i<endIndex; i++){
+        returnArray[returnArrayIndex] = array[i];
+        returnArrayIndex++;
+    }
+    
+    return returnArray;
+}
+
+tests({
+
+'It should return a new array':function(){
+    var testArray = [1];
+    var returnArray = slice(testArray);
+    eq(returnArray!=testArray, true);
+
+},
+
+'returnArray[0] should be the element at array[start]':function(){
+    var testArray = [1,2];
+    startValue = 1;
+    var returnArray = slice(testArray, startValue);
+    eq(returnArray[0], 2);
+
+},
+
+'returnArray[returnArray.length - 1] should be the element at array[end - 1];':function(){
+    var testArray = [1,2,3,4];
+    startValue = 0;
+    endValue = 2;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray[returnArray.length - 1], 2);
+
+},
+
+'If start is negative, it should be an offset from the end of the array':function(){
+    var testArray = [1,2,3,4];
+    startValue = -2;
+    endValue = 4;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray[0], 3);
+
+},
+
+'If start is undefined, it should start at index 0':function(){
+    var testArray = [1,2,3,4];
+    startValue = undefined;
+    endValue = 4;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray[0], 1);
+
+},
+
+'If start is > array.length - 1, it should return an empty array':function(){
+   
+    var testArray = [1,2,3,4];
+    startValue = 7;
+    endValue = 8;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(Object.keys(returnArray).length === 0, true);
+
+},
+
+'If end is negative, it should be an offset from the end of the array':function(){
+    
+    var testArray = [1,2,3,4];
+    startValue = 0;
+    endValue = -2;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray[returnArray.length-1], 2);
+
+},
+
+'If end is omitted or undefined, it should extract through the end of the array':function(){
+    var testArray = [1,2,3,4];
+    startValue = 0;
+    endValue = undefined;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray[returnArray.length-1], 4);
+
+},
+
+'If end is >array.length, it should extract through the end of the array':function(){
+    var testArray = [1,2,3,4];
+    startValue = 0;
+    endValue = 7;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray[returnArray.length-1], 4);
+
+},
+
+'returnArray.length should be end-start, or array.length - start if it runs until the end of the array':function(){
+    var testArray = [1,2,3,4];
+    startValue = 2;
+    endValue = 4;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray.length, endValue - startValue);
+
+},
+
+'Object references should continue to refer to the original object':function(){
+    var testObj = {name: 'jeremy'};
+    var testArray = [1,testObj,3,4];
+    startValue = 0;
+    endValue = 4;
+    var returnArray = slice(testArray, startValue, endValue);
+    eq(returnArray[1], testObj);
+    testObj.name = 'test';
+    eq(returnArray[1].name, 'test');
+
+},
+
+'It should work on array-like objects':function(){
+var testArray = [];
+var testRan = false;
+
+(function() {
+  testArray = slice(arguments);  
+  testRan = true;
+  eq(testArray[0],'a');
+})('a','b','c') 
+
+eq(testRan, true); 
+
+
+}
+
+
+
+});
+
+
+</script>

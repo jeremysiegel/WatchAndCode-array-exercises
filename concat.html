@@ -1,0 +1,153 @@
+<script src="../simpletest.js"></script>
+<script>
+
+
+//Function signature:
+//concat(array,[value1[, value2[, ...[, valueN]]]])
+
+//Return value:
+//New Array
+
+//Requirements:
+//It should return a new array whose first element(s) are from the object on which it was called
+//If the argument is an array, it should add the elements of the array to the new array
+//If the argument is not an array, it should add the value of the argument to the new arra
+//It should not recurse into nested arrays
+//If the element is an object reference, the reference should be copied into the new array 
+//The original array should be left untouched
+
+
+function concat(array){
+    var concatArray = [];
+    var concatArrayLength = concatArray.length;
+    argumentsArray = Array.from(arguments);
+
+    for(var i = 0; i < argumentsArray.length; i++){
+        if(Array.isArray(argumentsArray[i])){
+        for(var j=0; j<argumentsArray[i].length; j++){
+            if(Array.isArray(argumentsArray[i][j])){
+                for(var k = 0; k<argumentsArray[i][j].length; k++){
+                concatArray[concatArrayLength] = argumentsArray[i][j];
+                concatArrayLength++;
+                }
+            } else {
+                concatArray[concatArrayLength] = argumentsArray[i][j];
+                concatArrayLength++;
+            }
+        }
+        } else{
+        concatArray[concatArrayLength] = argumentsArray[i];
+        concatArrayLength++;
+        }
+    }
+    return concatArray;
+}
+
+tests({
+
+'If no arguments, it should return a new array whose first element(s) are from the object on which it was called':function(){
+var startArray = [1];
+var concatedArray = concat(startArray);
+eq(concatedArray[0], 1);
+
+
+},
+
+'If there are no arguments, it should return a copy of the array': function(){
+    var startArray = [1];
+var concatedArray = concat(startArray);
+eq(concatedArray === startArray, false);
+
+},
+
+
+'If the argument is an array, it should add the elements of the array to the new array':function(){
+    var startArray = [1];
+    var concatedArray = concat(startArray,[2,3]);
+    eq(concatedArray[1], 2);
+    eq(concatedArray[2], 3);
+
+},
+
+
+
+'If the argument is not an array, it should add the value of the argument to the new arra':function(){
+    var startArray = [1];
+    var concatedArray = concat(startArray,'a');
+    eq(concatedArray[1], 'a');
+
+
+},
+
+'It should accept multiple array arguments':function(){
+    var startArray = [0];
+    var concatedArray = concat(startArray,[1],[2,3]);
+    eq(concatedArray[1], 1);
+    eq(concatedArray[2], 2);
+    eq(concatedArray[3], 3);
+},
+
+'It should accept multiple non-array arguments':function(){
+    var startArray = [0];
+    var concatedArray = concat(startArray,1,2,3);
+    eq(concatedArray[1], 1);
+    eq(concatedArray[2], 2);
+    eq(concatedArray[3], 3);
+
+},
+
+'It should accept multiple array and non-array arguments':function(){
+    var startArray = [1];
+    var concatedArray = concat(startArray,[1],2,[3,4],);
+    eq(concatedArray[1], 1);
+    eq(concatedArray[2], 2);
+    eq(concatedArray[3], 3);
+    eq(concatedArray[4], 4);
+    eq(5 in concatedArray, false);
+},
+
+'If starting array is empty, first element of concatedArray should be first argument':function(){
+    var startArray = [];
+    var concatedArray = concat(startArray,[1],2,[3,4],);
+    eq(concatedArray[0], 1);
+    eq(concatedArray[1], 2);
+    eq(concatedArray[2], 3);
+    eq(concatedArray[3], 4);
+    eq(4 in concatedArray, false);
+},
+
+
+
+'It should not recurse into nested arrays':function(){
+    
+    var startArray = [0];
+    var concatedArray = concat(startArray,[1],[2,[3]]);
+    eq(concatedArray[1], 1);
+    eq(concatedArray[2], 2);
+    eq(concatedArray[3][0], 3);
+
+},
+
+'If the element is an object reference, the reference should be copied into the new array ':function(){
+    var startArray = [0];
+    var objectToConcat = {name: 'jeremy'};
+    var concatedArray = concat(startArray, objectToConcat);
+    eq(concatedArray[1], objectToConcat);
+    objectToConcat.name = 'Joe';
+    eq(concatedArray[1].name, 'Joe');
+
+},
+
+'The original array should be left untouched':function(){
+    var startArray = [0];
+    var concatedArray = concat(startArray);
+    eq(startArray === concatedArray, false);
+
+}
+
+
+
+});
+
+
+</script>

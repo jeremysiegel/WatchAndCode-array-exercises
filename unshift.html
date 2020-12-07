@@ -1,0 +1,97 @@
+<script src="../simpletest.js"></script>
+<script>
+
+//Prototype implementation
+//for(...){
+//    array[i] = arguments[i];
+ //   for(...){
+ //       array[j+arguments.length-1] = originalArray[j];
+ //   }
+//}
+
+
+//Function signature
+//unshift(array, element1[, ...[, elementN]])
+
+//Requirements
+//It should add elements to the beginning of the array as a chunk
+//It should return the new length of the array
+//It should apply to objects resembling arrays with numeric properties
+//It should change the length property to be originalLength + elementCount
+//It should not recurse into array elements
+
+function unshift(array){
+    var originalArray = [];
+
+    for(var i = 0; i<array.length; i++){
+        originalArray[i] = array[i];
+    }
+
+   
+    var argumentsArray = Array.from(arguments);
+    argumentsArray.shift();
+    
+    for(var i = 0; i<argumentsArray.length; i++){
+        array[i] = argumentsArray[i];
+    }
+
+    for(var i = 0; i<originalArray.length; i++){
+        array[argumentsArray.length+i] = originalArray[i];
+    }
+
+    if(!Array.isArray(array)){
+        array.length = array.length + argumentsArray.length;
+    }
+
+    return array.length;
+}
+
+tests({
+
+'It should add elements to the beginning of the array as a chunk':function() {
+    var testArray = [1,2];
+    unshift(testArray, 3, 4, 5);
+    eq(testArray[0],3);
+    eq(testArray[1],4);
+    eq(testArray[3],1);
+
+
+},
+'It should return the new length of the array':function(){ 
+    var testArray = [1,2];
+    var returnValue = unshift(testArray, 3, 4, 5);
+    eq(returnValue,5);
+    
+    },
+'It should apply to objects resembling arrays with numeric properties':function(){
+    var testObj = {0: 'a', 1: 'b', length: 2};
+    unshift(testObj, 'c', 'd', 'e');
+    
+    eq(testObj[0], 'c');
+    eq(testObj[1], 'd');
+    eq(testObj[3], 'a');
+
+    
+},
+'It should change the length property to be originalLength + elementCount':function(){
+    var testObj = {0: 'a', 1: 'b', length: 2};
+    var returnValue = unshift(testObj, 'c', 'd', 'e');
+    eq(returnValue,5);
+
+    
+},
+'It should not recurse into array elements':function(){
+    var testArray = [1,2];
+    unshift(testArray, [3,4]);
+    eq(testArray[0][0],3);
+    eq(Array.isArray(testArray[0]), true);
+    eq(testArray[1],1);
+
+
+    
+}
+
+});
+
+
+</script>

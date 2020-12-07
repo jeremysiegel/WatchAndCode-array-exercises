@@ -1,0 +1,190 @@
+<script src="../simpletest.js"></script>
+<script>
+
+//Prototype implemention
+//for(...){
+//    while(array[i]>array(j)){
+//        j++;
+//    }
+//    array[j] = originalArray[i];
+//}
+
+
+//Function signature
+//sort(array)
+
+//Return
+//sorted array
+
+//Requirements
+//It should convert array elements to strings
+//It should sort the array by comparing each character's Unicode code point value
+//It should return the original array as sorted
+//It should accept an optional compare function that takes two elements as parameters
+//If compareFunction returns <0, sort a to lower index than b.
+//If compareFunction returns 0, leave a and b unchanged with resprect to each other
+//If compareFunction returns > 0, sort b to lower index than a.
+//All undefined elements should be sorted to the end of the array
+//compareFunction(a, b) must always return the same value when given a specific pair of elements a and b as its two arguments. If inconsistent results are returned, then the sort order is undefined.
+
+
+function sort(array, compareFunction){
+    
+    var originalArray = [];
+    
+    for(i=0; i< array.length; i++){
+        originalArray[i] = array[i];
+    }
+
+    var originalArrayAsString = [];
+
+    if(typeof(array[0]) === "object" && array[0] != null){
+        for(i=0; i< array.length; i++){
+        originalArrayAsString[i] = array[i];
+        }
+    } else {
+        for(i=0; i< array.length; i++){
+        originalArrayAsString[i] =String(originalArray[i]);
+        } 
+    }
+
+    var buildArray = [];
+    
+    for(i=0; i< array.length; i++){
+        buildArray[i] = originalArrayAsString[i];
+    }
+
+    if(arguments.length<2){
+        compareFunction = function(elementJ,elementK){
+            if(elementJ < elementK){
+                return -1;
+            } else if(elementJ > elementK){
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    
+    function sortIndexSelector(element, index, array){
+        return element < 1 ;
+    }
+    
+    function originalIndexFinder(element, index, array){
+        return element === originalArrayAsString[j];
+    }
+
+    var compareArray = [];
+
+    //For each index in array, find lowest remaining value
+    for(var sortIndex=0; sortIndex < array.length; sortIndex++) {
+    
+        //For each element [j] remaining in array  
+        for(var j = 0 ; j <originalArrayAsString.length; j++){
+            //test if it is lower than each other element [k] and store the answer in an array
+            for(var k = 0; k < originalArrayAsString.length; k++){
+                compareArray[k] = compareFunction(originalArrayAsString[j],originalArrayAsString[k]);
+            }
+            //If j is equal to or lower than every other element, place it at the sort index
+            if(compareArray.every(sortIndexSelector)){
+                    array[sortIndex] = originalArray[buildArray.findIndex(originalIndexFinder)];
+                    //and remove it from the search array
+                    originalArrayAsString = originalArrayAsString.slice(0, j).concat(originalArrayAsString.slice(j+1,originalArrayAsString.length));
+                    j = originalArrayAsString.length;
+                } 
+        }
+    }
+
+    return array;
+}
+
+
+tests({
+/* 'It should convert array elements to strings':function(){
+   
+    var testArray = [1,2];
+    sort(testArray);
+    eq(testArray[0], "1");
+    eq(testArray[1], "2");
+}, */
+'It should sort the array by comparing each characters Unicode code point value':function(){
+   
+    var testArray = [2, 11, 3];
+    sort(testArray);
+    eq(testArray[0], 11);
+    eq(testArray[1], 2);
+    eq(testArray[2], 3);
+},
+'It should return the original array as sorted':function(){
+    var testArray = [2,11];
+    var returnValue = sort(testArray);
+    eq(testArray[0], 11);
+    eq(testArray[1], 2);
+    eq(returnValue, testArray)
+
+
+},
+'It should accept an optional compare function that takes two elements as parameters':function(){
+    
+    var testArray = [11,2];
+    function compareFunction(a,b){
+        return a-b;
+    } 
+
+    var returnValue = sort(testArray, compareFunction);
+    eq(testArray[0], 2);
+    eq(testArray[1], 11);
+    eq(returnValue, testArray);
+
+
+},
+
+'All undefined elements should be sorted to the end of the array':function(){
+    var testArray = [undefined, 2,11];
+    var returnValue = sort(testArray);
+    eq(testArray[0], 11);
+    eq(testArray[1], 2);
+    eq(testArray[2], undefined);
+    eq(returnValue, testArray)
+
+    var testArray = [null, 2,11];
+    var returnValue = sort(testArray);
+    eq(testArray[0], 11);
+    eq(testArray[1], 2);
+    eq(testArray[2], null);
+    eq(returnValue, testArray)
+
+    var testArray = [NaN, 2,11];
+    var returnValue = sort(testArray);
+    eq(testArray[0], 11);
+    eq(testArray[1], 2);
+    eq(testArray[2] != testArray[2], true);
+    eq(returnValue, testArray)
+
+},
+
+'It should sort objects by the value of one of their parameters':function(){
+
+    var testArray = [
+        {value: 11},
+        {value: 2},
+        {value: 3},
+        ];
+    function compareFunction(a,b){
+        return a.value - b.value;
+    } 
+
+    var returnValue = sort(testArray, compareFunction);
+    eq(testArray[0].value, 2);
+    eq(testArray[1].value, 3);
+    eq(testArray[2].value, 11);
+    eq(returnValue, testArray);
+
+}
+
+
+
+});
+
+
+</script>

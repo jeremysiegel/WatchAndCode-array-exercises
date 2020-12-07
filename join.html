@@ -1,0 +1,145 @@
+<script src="../simpletest.js"></script>
+<script>
+
+
+//Function signature
+//join(array, [separator])
+
+//Returns 
+//a string
+
+//Requirements
+//It should return a string that concatenates all the elements in an array
+//If there is no separator, array elements should be separated by a ","
+//It should accept an optional separator string
+//If necessary, the separator should be converted to a string
+//If the array has only one item, then the item should be returned without the separator
+//If separator is an empty string, elements should be joined without any characters in between them
+//If array.length = 0, it should return an empty string
+//If an element is undefined it should be converted to an empty string
+//If an element is null it should be converted to an empty string
+//If an element is an empty array it should be converted to an empty string
+//If an element is an array, it should treat it as a single comma separated string.
+//It should recurse into array elements that are arrays
+
+function join(array, separator){
+    var returnString = '';
+    if(arguments.length < 2){
+        separator=',';
+    }
+    
+
+    for(var i=0; i<array.length ; i++){
+        var inputElement = array[i];
+        if(inputElement === undefined || inputElement === null){
+            inputElement = '';
+        }
+
+        if(i!=array.length-1){
+            returnString = returnString + inputElement + separator;
+        } else {
+            returnString = returnString + inputElement;
+        }
+    }
+    
+    return returnString;
+
+}
+
+tests({
+
+'It should return a string that concatenates all the elements in an array':function(){
+  
+    var testArray = [1,2];
+    var returnString = join(testArray);
+    eq(returnString, "1,2");
+
+    },
+
+
+'If there is no separator, array elements should be separated by a ","':function(){
+    var testArray = [1,2];
+    var returnString = join(testArray);
+    eq(returnString, "1,2");
+    
+    },
+
+'It should accept an optional separator string':function(){
+    var testArray = [1,2];
+    var separator = "-";
+    var returnString = join(testArray, separator);
+    eq(returnString, "1-2");
+    
+    },
+'If necessary, the separator should be converted to a string':function(){
+    var testArray = [1,2];
+    var separator = 0;
+    var returnString = join(testArray, separator);
+    eq(returnString, "102");
+
+
+    },
+'If the array has only one item, then the item should be returned without the separator':function(){
+    var testArray = [1];
+    var separator = 0;
+    var returnString = join(testArray, separator);
+    eq(returnString, "1");
+
+   },
+'If separator is an empty string, elements should be joined without any characters in between them':function(){
+    var testArray = [1,2];
+    var separator = '';
+    var returnString = join(testArray, separator);
+    eq(returnString, "12");
+
+    },
+'If array.length = 0, it should return an empty string':function(){
+    var testArray = [];
+    var separator = ',';
+    var returnString = join(testArray, separator);
+    eq(returnString, "");
+},
+'If an element is undefined it should be converted to an empty string':function(){
+    var testArray = [1, undefined, 2];
+    var separator = ',';
+    var returnString = join(testArray, separator);
+    eq(returnString, "1,,2");
+    
+    },
+'If an element is null it should be converted to an empty string':function(){
+    var testArray = [1, null, 2];
+    var separator = ',';
+    var returnString = join(testArray, separator);
+    eq(returnString, "1,,2");
+    
+    },
+'If an element is an empty array it should be converted to an empty string':function(){
+    var testArray = [1, [], 2];
+    var separator = ',';
+    var returnString = join(testArray, separator);
+    eq(returnString, "1,,2");
+    
+    
+
+    },
+'If an element is an array, it should treat it as a single comma separated string.':function(){
+    var testArray = [1, [2,3], 4];
+    var separator = '-';
+    var returnString = join(testArray, separator);
+    eq(returnString, "1-2,3-4");
+    
+},
+'It should recurse into array elements that are arrays':function(){
+    var testArray = [1, [2,3,[4]], 4];
+    var separator = '-';
+    var returnString = join(testArray, separator);
+    eq(returnString, "1-2,3,4-4");
+}
+
+
+
+
+});
+
+
+</script>

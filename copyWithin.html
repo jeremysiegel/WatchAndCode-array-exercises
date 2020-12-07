@@ -1,0 +1,174 @@
+<script src="../simpletest.js"></script>
+<script>
+
+//Prototype Implementation:
+//// for(var i = start; i < end; i++){
+//    array[i]= originalArray[i]
+//}
+
+//Return value:
+//Array
+
+//Requirements:
+//It should copy parts of an array to another location
+//If target is negative, it should count from the end
+//If target is at or greater than array.length, nothing is copied
+//If target is after start, the copy sequence will be trimmed to fit array.length
+//It should accept an optional Start index
+//If start is negative, it should count from the end
+//It should accept an optionl end index
+//If end is negative it should count from the end.
+//It should work with a array-like object with numerical properties
+//It should not alter array.length
+
+
+function copyWithin(array, target, start, endIndex){
+
+    var originalArray = [];
+
+    for(var i = 0; i < array.length; i++){
+        originalArray[i] = array[i];
+    }
+
+    if(target <0){
+        target = array.length + target;
+    }
+
+    if(start === undefined  || start === null || start != start){
+        start = 0;
+    } else if(start <0){
+        start = array.length + start;
+    }
+
+    if(endIndex === undefined  || endIndex === null || endIndex != endIndex){
+        endIndex = array.length;
+    }
+
+    if(endIndex === array.length){
+        endIndex = endIndex - start + 1;
+    } else if(endIndex <0){
+        endIndex = array.length + endIndex +1;
+    } else {
+        endIndex = endIndex - start;
+    }
+
+    if(endIndex>array.length){
+        endIndex = array.length;
+    }
+
+    for(var i = target; i < endIndex; i++){
+        array[i]= originalArray[start];
+        start++;
+
+        if(start === originalArray.length){
+            break;
+        }
+    }
+
+    return array;
+
+
+}
+
+tests({
+
+'It should copy parts of an array to another location':function(){
+  
+    var testArray = [1,2,3];
+    copyWithin(testArray, 1);
+    eq(testArray[1],1);
+    eq(testArray[2],2);
+
+},
+
+'It should return the modified array':function(){
+  
+  var testArray = [1,2,3];
+  returnValue = copyWithin(testArray, 1);
+  eq(testArray[1],1);
+  eq(testArray[2],2);
+  eq(returnValue,testArray)
+
+},
+
+'If target is negative, it should count from the end':function(){
+  
+    var testArray = [1,2,3,4,5];
+    copyWithin(testArray, -2);
+    eq(testArray[0],1);
+    eq(testArray[1],2);
+    eq(testArray[2],3);
+    eq(testArray[3],1);
+    eq(testArray[4],2);
+
+},
+'If target is at or greater than array.length, nothing is copied':function(){
+    var testArray = [1,2,3];
+    copyWithin(testArray, 3);
+    eq(testArray[0],1);
+    eq(testArray[1],2);
+
+},
+
+'It should accept an optional start index':function(){
+  
+    var testArray = [1,2,3,4];
+    copyWithin(testArray, 1, 2);
+    eq(testArray[0],1);
+    eq(testArray[1],3);
+    eq(testArray[2],4);
+    eq(testArray[3],4);
+
+},
+'If start is negative, it should count from the end':function(){
+    var testArray = [1,2,3,4];
+    copyWithin(testArray, 1, -2);
+    eq(testArray[0],1);
+    eq(testArray[1],3);
+    eq(testArray[2],4);
+    eq(testArray[3],4);
+},
+'If target is after start, the copy sequence will be trimmed to fit array.length':function(){
+    
+    var testArray = [1,2,3,4,5];
+    copyWithin(testArray, -2);
+    eq(testArray[0],1);
+    eq(testArray[1],2);
+    eq(testArray[2],3);
+    eq(testArray[3],1);
+    eq(testArray[4],2);
+    eq(Boolean(testArray[5]),false);
+},
+'It should accept an optional end index':function(){
+    
+    var testArray = [1,2,3,4,5];
+    copyWithin(testArray, 0, 3, 4);
+    eq(testArray[0],4);
+    eq(testArray[1],2);
+    eq(testArray[2],3);
+    eq(testArray[3],4);
+    eq(testArray[4],5);
+
+},
+'If end is negative it should count from the end.':function(){
+   
+    var testArray = [1,2,3,4,5];
+    copyWithin(testArray, -2, -3, -1);
+    eq(testArray[0],1);
+    eq(testArray[1],2);
+    eq(testArray[2],3);
+    eq(testArray[3],3);
+    eq(testArray[4],4);
+},
+'It should work with a array-like object with numerical properties':function(){
+    var testObj = {0: 'a', 1: 'b', 2: 'c', length: 3};
+    copyWithin(testObj, 1);
+    eq(testObj[0], 'a');
+    eq(testObj[1], 'a');
+    eq(testObj[2], 'b');
+
+}
+});
+
+
+</script>
